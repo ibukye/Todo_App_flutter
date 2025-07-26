@@ -93,18 +93,38 @@ class _TodoScreenState extends State<TodoScreen> {
                 itemBuilder: (context, index) {
                   // List Tileを使うときれいなリスト項目を作成できる
                   final todo = _todoList[index];  // 現在のタスクを取得
-                  return ListTile(
-                    onTap: () {
+                  // To remove tasks USE Dismissible
+                  return Dismissible(
+                    // Key: 各項目を一意に識別するためのkey
+                    key: UniqueKey(),
+                    // onDismissed: スワイプされた後の処理
+                    onDismissed: (direction) {
                       setState(() {
-                        // isDoneの状態を反転させる
-                        todo.isDone = !todo.isDone;
+                        // リストから該当タスクを削除
+                        _todoList.removeAt(index);
                       });
                     },
+                    // スワイプ中の背景 (赤い削除アイコン)
+                    background: Container(
+                      color: Colors.red,
+                      alignment: Alignment.centerRight,
+                      padding: const EdgeInsets.only(right: 20.0),
+                      child: const Icon(Icons.delete, color: Colors.white),
+                    ),
+                    // child: スワイプされるウィジェット本体
+                    child: ListTile(
+                      onTap: () {
+                        setState(() {
+                          // isDoneの状態を反転させる
+                          todo.isDone = !todo.isDone;
+                        });
+                      },
 
-                    title: Text(
-                      todo.title,
-                      style: TextStyle(decoration: todo.isDone ? TextDecoration.lineThrough : TextDecoration.none)
-                    )
+                      title: Text(
+                        todo.title,
+                        style: TextStyle(decoration: todo.isDone ? TextDecoration.lineThrough : TextDecoration.none)
+                      )
+                    ),
                   );
                 }
               )
